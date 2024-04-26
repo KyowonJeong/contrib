@@ -11,17 +11,18 @@ jobs:
         run: |
           $owner = "KyowonJeong"
           $repo = "contrib"
-          $artifactName = "contrib_build-${{runner.os}}.tar.gz"
+          $artifactName = "contrib_build-Window.tar.gz" 
           $destinationPath = "test"
           
           # Set up the GitHub token
           $token = $env:GITHUB_TOKEN
-          #https://github.com/KyowonJeong/contrib/releases/tag/2024-04-26-085814
-          # Download the artifact using GitHub REST API
-          $url = "https://github.com/$owner/$repo/releases/latest"
-          $response = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $token"} -Method Get
-          $artifactUrl = ($response | Where-Object {$_.name -eq $artifactName}).archive_download_url
-          Invoke-WebRequest -Uri $artifactUrl -Headers @{Authorization = "Bearer $token"} -OutFile "$destinationPath\$artifactName.zip"
           
-          # Unzip the artifact
-          #Expand-Archive -Path "$destinationPath\$artifactName.zip" -DestinationPath $destinationPath
+          # Fetch the latest release information
+          $url = "https://api.github.com/repos/$owner/$repo/releases/latest"
+          $response = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $token"} -Method Get
+          
+          # Extract the download URL for the artifact
+          $artifactUrl = ($response.assets | Where-Object {$_.name -eq $artifactName}).browser_download_url
+          
+          # Download the artifact
+          Invoke-WebRequest -Uri $artifactUrl -Headers @{Authorization = "Bearer $token"} -OutFile "$destinationPath\$artifactName"
