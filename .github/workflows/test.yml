@@ -19,7 +19,7 @@ jobs:
           $token = $env:GITHUB_TOKEN
           
           # Download the artifact using GitHub REST API
-          $url = "https://api.github.com/repos/$owner/$repo/actions/artifacts"
+          $url = "https://api.github.com/repos/$owner/$repo/contrib/releases/latest"
           $response = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $token"} -Method Get
           $artifactUrl = ($response | Where-Object {$_.name -eq $artifactName}).archive_download_url
           Invoke-WebRequest -Uri $artifactUrl -Headers @{Authorization = "Bearer $token"} -OutFile "$destinationPath\$artifactName.zip"
