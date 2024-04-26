@@ -6,7 +6,6 @@ on:
 jobs:
   download-artifact:
     runs-on: windows-latest
-    #https://github.com/KyowonJeong/contrib/releases/latest
     steps:
       - name: Download Artifact
         run: |
@@ -25,4 +24,4 @@ jobs:
           Invoke-WebRequest -Uri $artifactUrl -Headers @{Authorization = "Bearer $token"} -OutFile "$destinationPath\$artifactName.zip"
           
           # Unzip the artifact
-          Expand-Archive -Path "$destinationPath\$artifactName.zip" -DestinationPath $destinationPath
+          #Expand-Archive -Path "$destinationPath\$artifactName.zip" -DestinationPath $destinationPath
