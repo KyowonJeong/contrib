@@ -1,0 +1,28 @@
+name: Download Artifact
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-artifact:
+    runs-on: windows-latest
+    #https://github.com/KyowonJeong/contrib/releases/latest
+    steps:
+      - name: Download Artifact
+        run: |
+          $owner = "KyowonJeong"
+          $repo = "contrib"
+          $artifactName = "contrib_build-${{runner.os}}.tar.gz"
+          $destinationPath = "test"
+          
+          # Set up the GitHub token
+          $token = $env:GITHUB_TOKEN
+          
+          # Download the artifact using GitHub REST API
+          $url = "https://api.github.com/repos/$owner/$repo/actions/artifacts"
+          $response = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $token"} -Method Get
+          $artifactUrl = ($response | Where-Object {$_.name -eq $artifactName}).archive_download_url
+          Invoke-WebRequest -Uri $artifactUrl -Headers @{Authorization = "Bearer $token"} -OutFile "$destinationPath\$artifactName.zip"
+          
+          # Unzip the artifact
+          Expand-Archive -Path "$destinationPath\$artifactName.zip" -DestinationPath $destinationPath
