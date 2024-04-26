@@ -16,9 +16,9 @@ jobs:
           
           # Set up the GitHub token
           $token = $env:GITHUB_TOKEN
-          
+          #https://github.com/KyowonJeong/contrib/releases/tag/2024-04-26-085814
           # Download the artifact using GitHub REST API
-          $url = "https://api.github.com/repos/$owner/$repo/contrib/releases/latest"
+          $url = "https://github.com/$owner/$repo/releases/latest"
           $response = Invoke-RestMethod -Uri $url -Headers @{Authorization = "Bearer $token"} -Method Get
           $artifactUrl = ($response | Where-Object {$_.name -eq $artifactName}).archive_download_url
           Invoke-WebRequest -Uri $artifactUrl -Headers @{Authorization = "Bearer $token"} -OutFile "$destinationPath\$artifactName.zip"
